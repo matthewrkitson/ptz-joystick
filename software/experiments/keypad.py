@@ -36,8 +36,6 @@ for column in columns:
     column.on()
 
 for index, row in enumerate(rows):
-    # Assign to local variable to avoid closing over index.
-    # row.when_pressed = lambda row: row_pressed(row, local_index), 
     row.when_pressed = functools.partial(row_pressed, index)
 
 signal.pause()

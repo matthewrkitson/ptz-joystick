@@ -6,7 +6,6 @@ import signal
 
 import web_api
 
-
 logger = logging.getLogger(__name__)
 
 fileHandler = logging.handlers.RotatingFileHandler("infopanel.log", maxBytes=1024*1024, backupCount=5)
