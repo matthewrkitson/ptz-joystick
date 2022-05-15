@@ -9,6 +9,7 @@ import adafruit_aw9523
 
 from illuminatedbutton import IlluminatedButton
 from lcd1602rgb import RGB1602
+from focusser import Focusser
 from quitter import Quitter
 from zoomer import Zoomer
 
@@ -66,13 +67,10 @@ focus_out_button     = IlluminatedButton( 8, aw9523, 7)
 
 quitter = Quitter(preset_recall_button, preset_store_button, lcd)
 zoomer = Zoomer(zoom_in_button, zoom_out_button, camera, lcd)
+focusser = Focusser(focus_in_button, focus_out_button, focus_auto_button, camera, lcd)
 
 preset_recall_button.when_pressed = functools.partial(preset_recall, camera, lcd)
 preset_store_button.when_pressed = functools.partial(preset_store, camera, lcd)
-
-focus_in_button.when_pressed = functools.partial(focus_in, camera, lcd)
-focus_out_button.when_pressed = functools.partial(focus_out, camera, lcd)
-focus_auto_button.when_pressed = functools.partial(focus_auto, camera, lcd)
 
 quitter.wait_for_exit()
 
