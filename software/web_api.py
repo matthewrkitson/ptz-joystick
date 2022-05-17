@@ -14,8 +14,15 @@ class WebApiController():
         self.zoom_speed_min = 1
         self.focus_speed_max = 7
         self.focus_speed_min = 1
+        self.pan_speed_min = 1
+        self.pan_speed_max = 24
+        self.tilt_speed_min = 1
+        self.tilt_speed_max = 20
+        self.pantilt_speed_min = max(self.pan_speed_min, self.tilt_speed_min)
+        self.pantilt_speed_max = min(self.pan_speed_max, self.tilt_speed_max)
 
     def _send_web_request(self, url):
+        pass
         response = requests.get(url)
         self.logger.debug(f"{url} => {response.status_code}")
         response.raise_for_status()
@@ -56,6 +63,39 @@ class WebApiController():
     def focus_unlock(self):
         url = f"http://{self.ip_address}/cgi-bin/ptzctrl.cgi?ptzcmd&unlock_mfocus"
         self._send_web_request(url)
+
+    def _ptz_go(self, direction, speed):
+        speed = utils.clamp(speed, self.pan_speed_min, self.pan_speed_max)
+        speed = utils.clamp(speed, self.tilt_speed_min, self.tilt_speed_max)
+        url = f"http://{self.ip_address}/cgi-bin/ptzctrl.cgi?ptzcmd&{direction}&{speed}&{speed}"
+        self._send_web_request(url)
+
+    def ptz_stop(self):
+        self._ptz_go("ptzstop", self.tilt_speed_min)
+
+    def ptz_up(self, speed):
+        self._ptz_go("up", speed)
+
+    def ptz_upright(self, speed):
+        self._ptz_go("rightup", speed)
+
+    def ptz_right(self, speed):
+        self._ptz_go("right", speed)
+
+    def ptz_downright(self, speed):
+        self._ptz_go("rightdown", speed)
+
+    def ptz_down(self, speed):
+        self._ptz_go("down", speed)
+
+    def ptz_downleft(self, speed):
+        self._ptz_go("leftdown", speed)
+
+    def ptz_left(self, speed):
+        self._ptz_go("left", speed)
+
+    def ptz_upleft(self, speed):
+        self._ptz_go("leftup", speed)
 
 
     #

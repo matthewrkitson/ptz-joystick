@@ -1,4 +1,4 @@
-class Focusser(d):
+class Focusser():
     def __init__(self, focus_in_button, focus_out_button, focus_auto_button, camera, lcd):
         self.focus_in_button = focus_in_button
         self.focus_out_button = focus_out_button

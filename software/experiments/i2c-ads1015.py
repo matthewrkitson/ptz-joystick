@@ -25,5 +25,5 @@ chan4 = AnalogIn(ads, ADS.P3)
 print("{:>5}\t{:>5}\t{:>5}\t{:>5}".format('v1', 'v2', 'v3', 'v4'))
 
 while True:
-    print("{:>5.3}\t{:>5.3f}\t{:>5.3f}\t{:>5.3f}".format(chan1.voltage, chan2.voltage, chan3.voltage, chan4.voltage))
+    print("{:>5}\t{:>5.3f}\t{:>5.3f}\t{:>5.3f}".format(chan1.value, chan2.voltage, chan3.voltage, chan4.voltage))
     time.sleep(0.5)
