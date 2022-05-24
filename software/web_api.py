@@ -1,12 +1,13 @@
 import requests
+import threading
 
 import utils
 
 class WebApiController():
     def __init__(self, ip_address, logger):
         self.ip_address = ip_address
-
         self.logger = logger
+        self.lock = threading.Lock()
 
         # Min and max values from PTZ camera documentation. 
         # docs/PTZOptics-HTTP-CGI-Commands-rev-1.4-1-20.pdf
@@ -23,10 +24,11 @@ class WebApiController():
 
     def _send_web_request(self, url):
         pass
-        response = requests.get(url)
-        self.logger.debug(f"{url} => {response.status_code}")
-        response.raise_for_status()
-        return response.content
+        with self.lock:
+            response = requests.get(url)
+            self.logger.debug(f"{url} => {response.status_code}")
+            response.raise_for_status()
+            return response.content
 
     def zoom_in(self, speed):
         speed = utils.clamp(speed, self.zoom_speed_min, self.zoom_speed_max)
