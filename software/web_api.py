@@ -64,38 +64,39 @@ class WebApiController():
         url = f"http://{self.ip_address}/cgi-bin/ptzctrl.cgi?ptzcmd&unlock_mfocus"
         self._send_web_request(url)
 
-    def _ptz_go(self, direction, speed):
-        speed = utils.clamp(speed, self.pan_speed_min, self.pan_speed_max)
-        speed = utils.clamp(speed, self.tilt_speed_min, self.tilt_speed_max)
-        url = f"http://{self.ip_address}/cgi-bin/ptzctrl.cgi?ptzcmd&{direction}&{speed}&{speed}"
-        self._send_web_request(url)
+    def _ptz_go(self, direction, pan_speed, tilt_speed=None):
+        if tilt_speed == None: tilt_speed = pan_speed
+        pan_speed = utils.clamp(pan_speed, self.pan_speed_min, self.pan_speed_max, True)
+        tilt_speed = utils.clamp(tilt_speed, self.tilt_speed_min, self.tilt_speed_max, True)
+        url = f"http://{self.ip_address}/cgi-bin/ptzctrl.cgi?ptzcmd&{direction}&{pan_speed}&{tilt_speed}"
+        # self._send_web_request(url)
 
     def ptz_stop(self):
-        self._ptz_go("ptzstop", self.tilt_speed_min)
+        self._ptz_go("ptzstop", self.pan_speed_min, self.tilt_speed_min)
 
-    def ptz_up(self, speed):
-        self._ptz_go("up", speed)
+    def ptz_up(self, pan_speed, tilt_speed=None):
+        self._ptz_go("up", pan_speed, tilt_speed)
 
-    def ptz_upright(self, speed):
-        self._ptz_go("rightup", speed)
+    def ptz_upright(self, pan_speed, tilt_speed=None):
+        self._ptz_go("rightup", pan_speed, tilt_speed)
 
-    def ptz_right(self, speed):
-        self._ptz_go("right", speed)
+    def ptz_right(self, pan_speed, tilt_speed=None):
+        self._ptz_go("right", pan_speed, tilt_speed)
 
-    def ptz_downright(self, speed):
-        self._ptz_go("rightdown", speed)
+    def ptz_downright(self, pan_speed, tilt_speed=None):
+        self._ptz_go("rightdown", pan_speed, tilt_speed)
 
-    def ptz_down(self, speed):
-        self._ptz_go("down", speed)
+    def ptz_down(self, pan_speed, tilt_speed=None):
+        self._ptz_go("down", pan_speed, tilt_speed)
 
-    def ptz_downleft(self, speed):
-        self._ptz_go("leftdown", speed)
+    def ptz_downleft(self, pan_speed, tilt_speed=None):
+        self._ptz_go("leftdown", pan_speed, tilt_speed)
 
-    def ptz_left(self, speed):
-        self._ptz_go("left", speed)
+    def ptz_left(self, pan_speed, tilt_speed=None):
+        self._ptz_go("left", pan_speed, tilt_speed)
 
-    def ptz_upleft(self, speed):
-        self._ptz_go("leftup", speed)
+    def ptz_upleft(self, pan_speed, tilt_speed=None):
+        self._ptz_go("leftup", pan_speed, tilt_speed)
 
 
     #
