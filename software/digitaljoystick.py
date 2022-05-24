@@ -1,10 +1,8 @@
 import logging
 import time
 
-import utils
-
 class DigitalJoystick():
-    def __init__(self, up_button, down_button, left_button, right_button, speed_slider, camera, lcd, logger):
+    def __init__(self, up_button, down_button, left_button, right_button, speed_slider, camera, lcd):
         self.up_button = up_button
         self.down_button = down_button
         self.left_button = left_button
@@ -12,8 +10,6 @@ class DigitalJoystick():
         self.speed_slider = speed_slider
         self.camera = camera
         self.lcd = lcd
-
-        self.logger = logger #logging.getLogger(__name__)
 
         self.up_button.when_pressed = self.status_changed
         self.up_button.when_released = self.status_changed
@@ -30,15 +26,16 @@ class DigitalJoystick():
         range = self.camera.pantilt_speed_max - self.camera.pantilt_speed_min
         min = self.camera.pantilt_speed_min
         speed = int(min + (range) * fraction)
-        
+
         # It seems that the is_pressed property takes a moment to get updated,
         # so do a brief sleep here. 
         time.sleep(0.01)
         status = (self.up_button.is_pressed, self.down_button.is_pressed, self.left_button.is_pressed, self.right_button.is_pressed)
-        self.logger.debug(f"Status changed: {status}")
+        logging.debug(f"Status changed: {status}")
 
         if status == (False, False, False, False):
             self.lcd.print_line1("Stop")
+            self.lcd.print_line2("")
             self.camera.ptz_stop()
         elif status == (True, False, False, False):
             self.lcd.print_line1("Up")
