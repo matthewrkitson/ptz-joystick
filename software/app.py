@@ -16,8 +16,10 @@ from analogjoystick import AnalogJoystick
 from digitaljoystick import DigitalJoystick
 from focusser import Focusser
 from illuminatedbutton import IlluminatedButton
+from keypad import Keypad
 from lcd1602rgb import RGB1602
 from quitter import Quitter
+from recaller import Recaller
 from zoomer import Zoomer
 
 import web_api
@@ -33,7 +35,7 @@ def handle_exception(exc_type, exc_value, exc_traceback):
         sys.__excepthook__(exc_type, exc_value, exc_traceback)
         return
 
-    logger.error("Uncaught exception", exc_info=(exc_type, exc_value, exc_traceback))
+    logging.error("Uncaught exception", exc_info=(exc_type, exc_value, exc_traceback))
 
 logger = logging.getLogger(__name__)
 
@@ -50,14 +52,17 @@ consoleHandler.setFormatter(formatter)
 fileHandler.setFormatter(formatter)
 
 logger.setLevel(logging.DEBUG)
+logger.info("----------------------------")
 logger.info("PTZ joystick camera starting")
+logger.info("----------------------------")
 
 sys.excepthook = handle_exception
+threading.excepthook = handle_exception
 
 camera = web_api.WebApiController("localhost:8080", logger)
 
 network_info = subprocess.check_output(["ip", "address"], text=True)
-logger.debug(f"Network status:\n{network_info}")
+logger.info(f"Network status:\n{network_info}")
 
 lcd = RGB1602(16,2)
 lcd.setRGB(64, 128, 64)
@@ -73,26 +78,29 @@ speed_dial = AnalogIn(ads1015, AnalogIn.P1, i2c_lock)
 analog_joystick_vertical = AnalogIn(ads1015, AnalogIn.P2, i2c_lock)
 speed_slider = AnalogIn(ads1015, AnalogIn.P3, i2c_lock)
 
-preset_recall_button = IlluminatedButton(14, aw9523, 1)
-preset_store_button  = IlluminatedButton(15, aw9523, 2)
-zoom_in_button       = IlluminatedButton(18, aw9523, 3)
-zoom_out_button      = IlluminatedButton(23, aw9523, 4)
-focus_in_button      = IlluminatedButton(24, aw9523, 5)
-focus_auto_button    = IlluminatedButton(25, aw9523, 6)
-focus_out_button     = IlluminatedButton( 8, aw9523, 7)
+preset_recall_button = IlluminatedButton(14, aw9523, 1, i2c_lock)
+preset_store_button  = IlluminatedButton(15, aw9523, 2, i2c_lock)
+zoom_in_button       = IlluminatedButton(18, aw9523, 3, i2c_lock)
+zoom_out_button      = IlluminatedButton(23, aw9523, 4, i2c_lock)
+focus_in_button      = IlluminatedButton(24, aw9523, 5, i2c_lock)
+focus_auto_button    = IlluminatedButton(25, aw9523, 6, i2c_lock)
+focus_out_button     = IlluminatedButton( 8, aw9523, 7, i2c_lock)
 
 joystick_up_button    = gpiozero.Button( 4)
 joystick_down_button  = gpiozero.Button(17)
 joystick_left_button  = gpiozero.Button(27)
 joystick_right_button = gpiozero.Button(22)
 
+keypad = Keypad((19, 13, 6), (5, 11, 9, 10))
+
 quitter = Quitter(preset_recall_button, preset_store_button, lcd)
 zoomer = Zoomer(zoom_in_button, zoom_out_button, camera, lcd)
 focusser = Focusser(focus_in_button, focus_out_button, focus_auto_button, camera, lcd)
 digital_joystick = DigitalJoystick(joystick_up_button, joystick_down_button, joystick_left_button, joystick_right_button, speed_slider, camera, lcd)
 analog_joystick = AnalogJoystick(analog_joystick_vertical, analog_joystick_horizontal, camera, lcd)
+recaller = Recaller(keypad, preset_recall_button, preset_store_button, camera, lcd)
 
-analog_joystick.message_loop()
+# analog_joystick.message_loop()
 
 preset_recall_button.when_pressed = functools.partial(preset_recall, camera, lcd)
 preset_store_button.when_pressed = functools.partial(preset_store, camera, lcd)
