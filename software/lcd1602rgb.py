@@ -53,20 +53,24 @@ LCD_5x8DOTS = 0x00
 
 
 class RGB1602:
-  def __init__(self, col, row):
+  def __init__(self, col, row, i2c_lock):
     self._row = row
     self._col = col
     self._showfunction = LCD_4BITMODE | LCD_1LINE | LCD_5x8DOTS;
+    self.i2c_lock = i2c_lock
     self.begin(self._row,self._col)
 
   def command(self,cmd):
-    b.write_byte_data(LCD_ADDRESS,0x80,cmd)
+    with self.i2c_lock:
+      b.write_byte_data(LCD_ADDRESS,0x80,cmd)
 
   def write(self,data):
-    b.write_byte_data(LCD_ADDRESS,0x40,data)
+    with self.i2c_lock:
+      b.write_byte_data(LCD_ADDRESS,0x40,data)
     
   def setReg(self,reg,data):
-    b.write_byte_data(RGB_ADDRESS,reg,data)
+    with self.i2c_lock:
+      b.write_byte_data(RGB_ADDRESS,reg,data)
 
   def setRGB(self,r,g,b):
     self.setReg(REG_RED,r)

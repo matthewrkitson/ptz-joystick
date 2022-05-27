@@ -41,7 +41,7 @@ logger = logging.getLogger(__name__)
 
 fileHandler = logging.handlers.RotatingFileHandler("ptz-joystick.log", maxBytes=1024*1024, backupCount=5)
 fileHandler.setLevel(logging.INFO)
-logger.addHandler(fileHandler)
+logging.addHandler(fileHandler)
 
 consoleHandler = logging.StreamHandler()
 consoleHandler.setLevel(logging.DEBUG)
@@ -64,12 +64,13 @@ camera = web_api.WebApiController("localhost:8080", logger)
 network_info = subprocess.check_output(["ip", "address"], text=True)
 logger.info(f"Network status:\n{network_info}")
 
-lcd = RGB1602(16,2)
+i2c_lock = threading.Lock()
+
+lcd = RGB1602(16, 2, i2c_lock)
 lcd.setRGB(64, 128, 64)
 lcd.print_line1(f"PTZ camera")
 
 i2c = board.I2C()
-i2c_lock = threading.Lock()
 aw9523 = adafruit_aw9523.AW9523(i2c)
 
 ads1015 = adafruit_ads1x15.ads1015.ADS1015(i2c)
