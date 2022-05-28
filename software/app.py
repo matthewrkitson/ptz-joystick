@@ -24,12 +24,6 @@ from zoomer import Zoomer
 
 import web_api
 
-def preset_recall(camera, lcd):
-    lcd.print_line1("Preset recall")
-
-def preset_store(camera, lcd):
-    lcd.print_line1("Preset store")
-
 def handle_exception(exc_type, exc_value, exc_traceback):
     if issubclass(exc_type, KeyboardInterrupt):
         sys.__excepthook__(exc_type, exc_value, exc_traceback)
@@ -37,11 +31,11 @@ def handle_exception(exc_type, exc_value, exc_traceback):
 
     logging.error("Uncaught exception", exc_info=(exc_type, exc_value, exc_traceback))
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger()
 
 fileHandler = logging.handlers.RotatingFileHandler("ptz-joystick.log", maxBytes=1024*1024, backupCount=5)
 fileHandler.setLevel(logging.INFO)
-logging.addHandler(fileHandler)
+logger.addHandler(fileHandler)
 
 consoleHandler = logging.StreamHandler()
 consoleHandler.setLevel(logging.DEBUG)
@@ -59,10 +53,10 @@ logger.info("----------------------------")
 sys.excepthook = handle_exception
 threading.excepthook = handle_exception
 
-camera = web_api.WebApiController("localhost:8080", logger)
+camera = web_api.WebApiController("localhost:8080")
 
 network_info = subprocess.check_output(["ip", "address"], text=True)
-logger.info(f"Network status:\n{network_info}")
+logging.info(f"Network status:\n{network_info}")
 
 i2c_lock = threading.Lock()
 
@@ -102,9 +96,6 @@ analog_joystick = AnalogJoystick(analog_joystick_vertical, analog_joystick_horiz
 recaller = Recaller(keypad, preset_recall_button, preset_store_button, camera, lcd)
 
 # analog_joystick.message_loop()
-
-preset_recall_button.when_pressed = functools.partial(preset_recall, camera, lcd)
-preset_store_button.when_pressed = functools.partial(preset_store, camera, lcd)
 
 quitter.wait_for_exit()
 

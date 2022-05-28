@@ -13,8 +13,7 @@ class Keypad():
         col1 = gpiozero.LED(col_pins[0])
         col2 = gpiozero.LED(col_pins[1])
         col3 = gpiozero.LED(col_pins[2])
-        
-        # Columns should be connected to Vcc, not ground. 
+
         row1 = gpiozero.Button(row_pins[0], pull_up=False)
         row2 = gpiozero.Button(row_pins[1], pull_up=False)
         row3 = gpiozero.Button(row_pins[2], pull_up=False)
