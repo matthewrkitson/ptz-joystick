@@ -1,0 +1,53 @@
+# Pushbutton LEDs
+
+LED-    LED+    Button GND    Button GPIO
+ 1       2          3              4
+
+LEDs => AW9523 output 1-7
+
+Buttons
+ 1: GPIO20
+ 2: GPIO21
+ 3: GPIO26
+ 4: GPIO19
+ 5: GPIO13
+ 6: GPIO6
+ 7: GPIO5
+
+
+# Analog inputs
+
+Vin  3v3  GND
+ 1    2    3 
+
+Analog inputs => ADS1015 inputs
+
+ 0: Slider
+ 1: Analog joystick up-down
+ 2: Analog joystick left-right
+ 3: Dial
+
+
+ # Keypad (phone style)
+ 1: C1  GPIO4
+ 2: C2  GPIO17
+ 3: C3  GPIO27
+ 4: R1  GPIO22
+ 5: R2  GPIO10
+ 6: R3  GPIO9
+ 7: R4  GPIO11
+ 8: NC
+
+# Keypad (number style)
+ 1: C2  GPIO4
+ 2: R1  GPIO17
+ 3: C1  GPIO27
+ 4: R4  GPIO22
+ 5: C3  GPIO10
+ 6: R3  GPIO9
+ 7: R2  GPIO11
+ 8: NC
+
+ C1, C2, C3     => GPIO 27,  4, 10
+ R1, R2, R3, R4 => GPIO 17, 11,  9, 22
+
