@@ -26,7 +26,7 @@ class IlluminatedButton(gpiozero.Button):
     def on(self):
         self._stop_pulsing()
         with self.i2c_lock:
-            self.aw9523.set_constant_current(self.led_id, 255)
+            self.aw9523.set_constant_current(self.led_id, 155)
         self.state = IlluminatedButton.ON
 
     def pulse(self, period=1):

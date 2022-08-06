@@ -2,14 +2,14 @@ import functools
 import gpiozero
 import signal
 
-col1 = gpiozero.LED(19)
-col2 = gpiozero.LED(13)
-col3 = gpiozero.LED( 6)
+col1 = gpiozero.LED( 4)
+col2 = gpiozero.LED(17)
+col3 = gpiozero.LED(27)
 
-row1 = gpiozero.Button( 5,  pull_up=False)
-row2 = gpiozero.Button(11,  pull_up=False)
+row1 = gpiozero.Button(22,  pull_up=False)
+row2 = gpiozero.Button(10,  pull_up=False)
 row3 = gpiozero.Button( 9, pull_up=False)
-row4 = gpiozero.Button(10, pull_up=False)
+row4 = gpiozero.Button(11, pull_up=False)
 
 columns = (col1, col2, col3)
 rows = (row1, row2, row3, row4)
@@ -37,5 +37,7 @@ for column in columns:
 
 for index, row in enumerate(rows):
     row.when_pressed = functools.partial(row_pressed, index)
+
+print("Press a key on the keypad...")
 
 signal.pause()

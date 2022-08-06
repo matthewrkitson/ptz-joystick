@@ -1,13 +1,15 @@
 import logging
 import time
 
+import utils
+
 class DigitalJoystick():
-    def __init__(self, up_button, down_button, left_button, right_button, speed_slider, camera, lcd):
+    def __init__(self, up_button, down_button, left_button, right_button, speed_value_provider, camera, lcd):
         self.up_button = up_button
         self.down_button = down_button
         self.left_button = left_button
         self.right_button = right_button
-        self.speed_slider = speed_slider
+        self.speed_value_provider = speed_value_provider
         self.camera = camera
         self.lcd = lcd
 
@@ -21,11 +23,7 @@ class DigitalJoystick():
         self.right_button.when_released = self.status_changed
 
     def status_changed(self):
-        # Slider installed upside down; top is 0V, bottom is 3.3V
-        fraction = 1 - (self.speed_slider.voltage / 3.3)
-        range = self.camera.pantilt_speed_max - self.camera.pantilt_speed_min
-        min = self.camera.pantilt_speed_min
-        speed = int(min + (range) * fraction)
+        speed = utils.interpolate(self.speed_value_provider.min, self.speed_value_provider.value, self.speed_value_provider.max, self.camera.pantilt_speed_min, self.camera.pantilt_speed_max)
 
         # It seems that the is_pressed property takes a moment to get updated,
         # so do a brief sleep here. 

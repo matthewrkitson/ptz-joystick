@@ -19,9 +19,6 @@ class AnalogJoystick():
         # Start a new thread to run the message loop
         self.message_loop_thread = threading.Thread(target=self.message_loop, daemon=True)
         self.message_loop_thread.start()
-
-    def interpolate(self, value):
-        return utils.interpolate(0, self.leftright.voltage, 3.3, self.camera.pantilt_min, self.camera.pantilt_max)
   
     def message_loop(self):
         dnr = donotrepeat.DoNotRepeat()
@@ -105,7 +102,8 @@ class AnalogJoystick():
                         self.lcd.print_line2(f"UDLR: {speed_up}, {speed_down}, {speed_left}, {speed_right}")
 
             except: 
-                if dnr.do_not_repeat(f"exception"):
-                    logging.exception("Exception from analog joystick")
+                logging.exception("Exception from analog joystick")
+                self.lcd.print_line1("Joystick error")
+                self.lcd.print_line2(f"")
 
             time.sleep(0.1)

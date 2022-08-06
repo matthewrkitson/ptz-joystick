@@ -2,6 +2,7 @@
 import time
 from smbus import SMBus
 b = SMBus(1)
+time.sleep(1)
 
 #Device I2C Arress
 LCD_ADDRESS   =  (0x7c>>1)

@@ -5,7 +5,7 @@ import threading
 import utils
 
 class WebApiController():
-    def __init__(self, ip_address):
+    def __init__(self, ip_address, focus_lock_button):
         self.ip_address = ip_address
         self.lock = threading.Lock()
 
@@ -23,8 +23,12 @@ class WebApiController():
         self.pantilt_speed_max = min(self.pan_speed_max, self.tilt_speed_max)
         self.preset_id_min = 0
         self.preset_id_max = 254
+        self.focus_lock_button = focus_lock_button
+        self.focus_locked = False
 
     def _send_web_request(self, url):
+        # print("Supress web request send")
+        # return
         with self.lock:
             response = requests.get(url)
             logging.debug(f"{url} => {response.status_code}")
@@ -34,15 +38,21 @@ class WebApiController():
         speed = utils.clamp(speed, self.zoom_speed_min, self.zoom_speed_max)
         url = f"http://{self.ip_address}/cgi-bin/ptzctrl.cgi?ptzcmd&zoomin&{speed}"
         self._send_web_request(url)
+        self.focus_locked = False
+        self.focus_lock_button.off()
 
     def zoom_out(self, speed):
         speed = utils.clamp(speed, self.zoom_speed_min, self.zoom_speed_max)
         url = f"http://{self.ip_address}/cgi-bin/ptzctrl.cgi?ptzcmd&zoomout&{speed}"
         self._send_web_request(url)
+        self.focus_locked = False
+        self.focus_lock_button.off()
 
     def zoom_stop(self):
         url = f"http://{self.ip_address}/cgi-bin/ptzctrl.cgi?ptzcmd&zoomstop"
         self._send_web_request(url)
+        self.focus_locked = False
+        self.focus_lock_button.off()
 
     def focus_in(self, speed):
         speed = utils.clamp(speed, self.focus_speed_min, self.focus_speed_max)
@@ -61,10 +71,14 @@ class WebApiController():
     def focus_lock(self):
         url = f"http://{self.ip_address}/cgi-bin/ptzctrl.cgi?ptzcmd&lock_mfocus"
         self._send_web_request(url)
+        self.focus_locked = True
+        self.focus_lock_button.on()
 
     def focus_unlock(self):
         url = f"http://{self.ip_address}/cgi-bin/ptzctrl.cgi?ptzcmd&unlock_mfocus"
         self._send_web_request(url)
+        self.focus_locked = False
+        self.focus_lock_button.off()
 
     def _ptz_go(self, direction, pan_speed, tilt_speed=None):
         if tilt_speed == None: tilt_speed = pan_speed
@@ -72,6 +86,8 @@ class WebApiController():
         tilt_speed = utils.clamp(tilt_speed, self.tilt_speed_min, self.tilt_speed_max, True)
         url = f"http://{self.ip_address}/cgi-bin/ptzctrl.cgi?ptzcmd&{direction}&{pan_speed}&{tilt_speed}"
         self._send_web_request(url)
+        self.focus_locked = False
+        self.focus_lock_button.off()
 
     def ptz_stop(self):
         self._ptz_go("ptzstop", self.pan_speed_min, self.tilt_speed_min)
@@ -105,9 +121,13 @@ class WebApiController():
         preset_id = utils.clamp(preset_id, self.preset_id_min, self.preset_id_max)
         url = f"http://{self.ip_address}/cgi-bin/ptzctrl.cgi?ptzcmd&poscall&{preset_id}"
         self._send_web_request(url)
+        self.focus_locked = False
+        self.focus_lock_button.off()
 
     def store_preset(self, preset_id):
         # TODO: May need to exclude ids 90-99, as they may not be legal position numbers
         preset_id = utils.clamp(preset_id, self.preset_id_min, self.preset_id_max)
         url = f"http://{self.ip_address}/cgi-bin/ptzctrl.cgi?ptzcmd&posset&{preset_id}"
         self._send_web_request(url)
+        self.focus_locked = False
+        self.focus_lock_button.off()
