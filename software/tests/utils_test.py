@@ -35,5 +35,5 @@ interpolate_test_data = [
 ]
 @pytest.mark.parametrize("in_min, value_in, in_max, out_min, out_max, expected", interpolate_test_data)
 def test_interpolate(in_min, value_in, in_max, out_min, out_max, expected):
-    assert utils.interpolate(in_min, value_in, in_max, out_min, out_max) == expected
+    assert utils.interpolate(in_min, value_in, in_max, out_min, out_max, int) == expected
     

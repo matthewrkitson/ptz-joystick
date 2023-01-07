@@ -21,6 +21,7 @@ pyftdi==0.54.0
 pyparsing==3.0.9
 pyserial==3.5
 pytest==7.1.2
+python-osc==1.8.0
 pyusb==1.2.1
 requests==2.27.1
 rpi-ws281x==4.3.4
@@ -29,3 +30,4 @@ smbus==1.1.post2
 sysv-ipc==1.1.0
 tomli==2.0.1
 urllib3==1.26.9
+xair-api==2.2.2

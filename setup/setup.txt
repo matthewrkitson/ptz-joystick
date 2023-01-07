@@ -5,8 +5,22 @@ Use Raspberry Pi imager to set up SD card, and configure:
  - Configure WiFi 
 
 Alternatively, for WiFi and SSH:
-- Copy wpa_supplicant.conf and ssh to the FAT32 partition of your Raspberry Pi SD card before turning it on for the first time.
+ - Copy wpa_supplicant.conf and ssh to the FAT32 partition of your Raspberry Pi SD card before turning it on for the first time.
  - Make sure you edit wpa_supplicant.conf to contain your network details first.
  
 
 sudo apt-get install python3-dev
+
+To use the X-Air API, we need to build a newer version of Python than comes 
+with the default Raspberry PI OS.
+
+sudo apt-get install -y build-essential tk-dev libncurses5-dev libncursesw5-dev libreadline6-dev libdb5.3-dev libgdbm-dev libsqlite3-dev libssl-dev libbz2-dev libexpat1-dev liblzma-dev zlib1g-dev libffi-dev
+wget https://www.python.org/ftp/python/3.11.1/Python-3.11.1.tgz
+tar -zxvf Python-3.11.1.tgz
+cd Python-3.11.1.tgz
+./configure --enable-optimizations
+make
+sudo make altinstall
+
+Then create the virtual environment using Python 3.11
+python3.11 -m venv software/.venv

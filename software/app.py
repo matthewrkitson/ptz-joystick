@@ -12,6 +12,8 @@ import adafruit_aw9523
 import adafruit_ads1x15.ads1015
 import adafruit_seesaw.seesaw
 
+import xair_api
+
 from analogin import AnalogIn
 from analogjoystick import AnalogJoystick
 from constantvalueprovider import ConstantValueProvider
@@ -20,9 +22,11 @@ from focusser import Focusser
 from illuminatedbutton import IlluminatedButton
 from keypad import Keypad
 from lcd1602rgb import RGB1602
+from mixer import Mixer
 from quitter import Quitter
 from recaller import Recaller
 from rotaryvalueprovider import RotaryValueProvider
+from volumecontrol import VolumeControl
 from zoomer import Zoomer
 
 import web_api
@@ -72,12 +76,11 @@ aw9523 = adafruit_aw9523.AW9523(i2c)
 rotary1_int_pin = gpiozero.Button(25, pull_up=None, active_state=False)
 rotary1_seesaw = adafruit_seesaw.seesaw.Seesaw(board.I2C(), 0x36)
 
-# ads1015 = adafruit_ads1x15.ads1015.ADS1015(i2c)
-# analog_joystick_horizontal = AnalogIn(ads1015, AnalogIn.P0, i2c_lock)
-# speed_dial = AnalogIn(ads1015, AnalogIn.P1, i2c_lock)
-# analog_joystick_vertical = AnalogIn(ads1015, AnalogIn.P2, i2c_lock)
-# speed_slider = AnalogIn(ads1015, AnalogIn.P3, i2c_lock)
-# speed_value_provider = AnalogValueProvider(...)
+ads1015 = adafruit_ads1x15.ads1015.ADS1015(i2c)
+dial = AnalogIn(ads1015, AnalogIn.P3, i2c_lock)
+slider = AnalogIn(ads1015, AnalogIn.P0, i2c_lock)
+# analog_joystick_horizontal = AnalogIn(ads1015, AnalogIn.P2, i2c_lock)
+# analog_joystick_vertical = AnalogIn(ads1015, AnalogIn.P1, i2c_lock)
 
 preset_recall_button = IlluminatedButton(20, aw9523, 1, i2c_lock)
 preset_store_button  = IlluminatedButton(21, aw9523, 2, i2c_lock)
@@ -98,15 +101,24 @@ joystick_right_button = gpiozero.Button(23)
 
 keypad = Keypad((4, 17, 27), (22, 10, 9, 11))
 
+kind_id = "X32"
+ip = "xx.xx.xx.xx"
+mixer = Mixer(kind_id, ip)
+
 quitter = Quitter(preset_recall_button, preset_store_button, lcd)
 zoomer = Zoomer(zoom_in_button, zoom_out_button, camera, lcd)
 focusser = Focusser(focus_in_button, focus_out_button, focus_lock_button, camera, lcd)
 digital_joystick = DigitalJoystick(joystick_up_button, joystick_down_button, joystick_left_button, joystick_right_button, speed_value_provider, camera, lcd)
 # analog_joystick = AnalogJoystick(analog_joystick_vertical, analog_joystick_horizontal, camera, lcd)
 recaller = Recaller(keypad, preset_recall_button, preset_store_button, camera, lcd)
+desk_volume = VolumeControl(slider, mixer, 9, lcd)
+aux_volume = VolumeControl(dial, mixer, 10, lcd)
 
 logger.info("PTZ camera joystick active")
+
 # analog_joystick.message_loop()
+desk_volume.start()
+aux_volume.start()
 
 quitter.wait_for_exit()
 
