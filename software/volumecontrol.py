@@ -42,12 +42,11 @@ class VolumeControl():
                     fader_value = utils.interpolate(self.analogin.voltage_min, current_value, self.analogin.voltage_max, self.mixer.fader_min, self.mixer.fader_max)
                     logging.debug(f"Setting {self.name} to {fader_value}")
                     self.mixer.send(address, fader_value)
+                last_value = current_value
             except: 
                 logging.exception(f"Exception from {self.name} volume control")
                 self.lcd.print_line1(f"Mixer error")
                 self.lcd.print_line2(f"{self.name}")
-            finally:
-                last_value = current_value
 
             time.sleep(0.01)
         
