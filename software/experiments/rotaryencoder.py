@@ -21,6 +21,7 @@ import time
 
 i2c_address = 0x37
 int_pin_gpio = 8
+button_pin_gpio = 7
 
 seesaw = seesaw.Seesaw(board.I2C(), i2c_address)
 
@@ -35,36 +36,46 @@ pixel.brightness = 0.5
 position = 0
 color = 0  # start at red
 
-def read_position():
-    global color, position, switch
-    print("reading position")
+# def read_position():
+#     global color, position, switch
+#     print("reading position")
 
-    # negate the position to make clockwise rotation positive
+#     # negate the position to make clockwise rotation positive
+#     delta = seesaw.encoder_delta()
+#     print(f"Delta: {delta}")
+#     if delta: 
+#         position -= delta
+#         print(f"New Position: {position}")
+#         if switch.value:
+#             color = (color + 256 - delta) % 256  # wrap around to 0-255
+#             pixel.fill(colorwheel(color))
+#         else: 
+#             new_brightness = max(min(pixel.brightness + (delta / 50), 1), 0)
+#             pixel.brightness = new_brightness
+
+def print_delta():
     delta = seesaw.encoder_delta()
-    print(f"Delta: {delta}")
-    if delta: 
-        position -= delta
-        print(f"New Position: {position}")
-        if switch.value:
-            color = (color + 256 - delta) % 256  # wrap around to 0-256
-            pixel.fill(colorwheel(color))
-        else: 
-            new_brightness = max(min(pixel.brightness + (delta / 50), 1), 0)
-            pixel.brightness = new_brightness
+    print(f"Encoder delta: {delta}")
+
+def print_pressed():
+    print("Pressed")
 
 int_pin = gpiozero.Button(int_pin_gpio, pull_up=None, active_state=False)
-# int_pin.when_pressed = read_position
+int_pin.when_pressed = print_delta
+
+button_pin = gpiozero.Button(button_pin_gpio, pull_up=True)
+button_pin.when_pressed = print_pressed
 
 print("Turn the encoder")
 
-while True:
-    time.sleep(0.1)
-    try:
-        if int_pin.value:
-            read_position()
-        else:
-            continue
-    except:
-        pass
+# while True:
+#     time.sleep(0.1)
+#     try:
+#         if int_pin.value:
+#             read_position()
+#         else:
+#             continue
+#     except:
+#         pass
 
 signal.pause()
