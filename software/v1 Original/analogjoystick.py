@@ -17,12 +17,19 @@ class AnalogJoystick():
         self.updown_centre = self.updown.voltage
 
         # Start a new thread to run the message loop
+        self.finished = False;
         self.message_loop_thread = threading.Thread(target=self.message_loop, daemon=True)
+
+    def start(self):
         self.message_loop_thread.start()
+
+    def stop(self):
+        self.finished = True;
+        self.message_loop_thread.join()
   
     def message_loop(self):
         dnr = donotrepeat.DoNotRepeat()
-        while True:
+        while not self.finished:
             try:
                 speed_left = None
                 speed_right = None
@@ -32,22 +39,22 @@ class AnalogJoystick():
 
                 left_v = self.leftright_centre - self.leftright.voltage
                 if left_v > 0:
-                    speed_left = utils.interpolate(self.leftright_centre, self.leftright.voltage, 0, self.camera.pan_speed_min - stop_buffer, self.camera.pan_speed_max)
+                    speed_left = utils.interpolate(self.leftright_centre, self.leftright.voltage, 0, self.camera.pan_speed_min - stop_buffer, self.camera.pan_speed_max, int)
                     if speed_left < self.camera.pan_speed_min: speed_left = None
 
                 right_v = self.leftright.voltage - self.leftright_centre
                 if right_v > 0:
-                    speed_right = utils.interpolate(self.leftright_centre, self.leftright.voltage, 3.3, self.camera.pan_speed_min - stop_buffer, self.camera.pan_speed_max)
+                    speed_right = utils.interpolate(self.leftright_centre, self.leftright.voltage, 3.3, self.camera.pan_speed_min - stop_buffer, self.camera.pan_speed_max, int)
                     if speed_right < self.camera.pan_speed_min: speed_right = None
 
                 up_v = self.updown.voltage - self.updown_centre
                 if up_v > 0:
-                    speed_up = utils.interpolate(self.updown_centre, self.updown.voltage, 3.3, self.camera.tilt_speed_min - stop_buffer, self.camera.tilt_speed_max)
+                    speed_up = utils.interpolate(self.updown_centre, self.updown.voltage, 3.3, self.camera.tilt_speed_min - stop_buffer, self.camera.tilt_speed_max, int)
                     if speed_up < self.camera.tilt_speed_min: speed_up = None
 
                 down_v = self.updown_centre - self.updown.voltage
                 if down_v > 0:
-                    speed_down = utils.interpolate(self.updown_centre, self.updown.voltage, 0, self.camera.tilt_speed_min - stop_buffer, self.camera.tilt_speed_max)
+                    speed_down = utils.interpolate(self.updown_centre, self.updown.voltage, 0, self.camera.tilt_speed_min - stop_buffer, self.camera.tilt_speed_max, int)
                     if speed_down < self.camera.tilt_speed_min: speed_down = None
 
                 if not speed_up and not speed_down and not speed_left and not speed_right:

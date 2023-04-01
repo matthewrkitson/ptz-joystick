@@ -22,3 +22,11 @@ class AnalogIn():
         """Returns the voltage from the ADC pin as a floating point value."""
         with self.i2c_lock:
             return self.analog_in.voltage
+
+    @property
+    def voltage_max(self):
+        return 3.3
+
+    @property
+    def voltage_min(self):
+        return 0

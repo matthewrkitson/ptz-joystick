@@ -23,7 +23,7 @@ class DigitalJoystick():
         self.right_button.when_released = self.status_changed
 
     def status_changed(self):
-        speed = utils.interpolate(self.speed_value_provider.min, self.speed_value_provider.value, self.speed_value_provider.max, self.camera.pantilt_speed_min, self.camera.pantilt_speed_max)
+        speed = utils.interpolate(self.speed_value_provider.min, self.speed_value_provider.value, self.speed_value_provider.max, self.camera.pantilt_speed_min, self.camera.pantilt_speed_max, int)
 
         # It seems that the is_pressed property takes a moment to get updated,
         # so do a brief sleep here. 
