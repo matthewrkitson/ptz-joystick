@@ -5,6 +5,7 @@ class Mixer:
     def __init__(self, kind, ip):
         try:
             self.mixer = xair_api.connect(kind, ip=ip)
+            self.mixer.__enter__()
             self.mixer.validate_connection()
             logging.debug(f"Created mixer: {self.mixer}")
         except:

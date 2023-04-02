@@ -51,3 +51,15 @@ Analog inputs => ADS1015 inputs
  C1, C2, C3     => GPIO 27,  4, 10
  R1, R2, R3, R4 => GPIO 17, 11,  9, 22
 
+ Rotary encoder interrupt pins
+ R1 int:    GPIO 25
+ R2 int:    GPIO  8
+ R2 button: GPIO  7
+
+ I2C Addresses
+ Rotary 1: 0x36
+ Rotary 2: 0x37
+ ??: 0x3e
+ ??: 0x48
+ ??: 0x58
+ ??: 0x60
