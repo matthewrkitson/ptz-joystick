@@ -8,7 +8,7 @@ source launcher/.venv/bin/activate
 # pip install -r ../requirements.txt
 
 # versions contains directory names of versions of the software
-versions=("v1 Original" "v2 Mixer")
+versions=("v2 Mixer" "v1 Original")
 python3 launcher/menu.py "${versions[@]}"
 index=$?
 version="${versions[$index]}"

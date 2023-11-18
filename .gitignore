@@ -1,5 +1,7 @@
 setup/wpa_supplicant.real.conf
-
+*.log
+*.log.*
+*.swp
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

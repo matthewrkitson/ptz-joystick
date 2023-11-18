@@ -39,7 +39,7 @@ class VolumeControl():
         self.logger.debug(f"{self.name}: Starting volume control meesage loop")
         last_value = math.inf
         current_value = 0
-        delta = (self.v_max - self.v_min) / 1000
+        delta = (self.v_max - self.v_min) / 500
         address = f"/bus/{self.bus:02d}/mix/fader"
         while not self.finished:
             try:
@@ -47,7 +47,7 @@ class VolumeControl():
                 # self.logger.debug(f"Current value: {current_value} (last value: {last_value})")
                 if abs(current_value - last_value) > delta:
                     fader_value = utils.interpolate(self.v_min, current_value, self.v_max, self.f_min, self.f_max)
-                    self.logger.debug(f"Setting {self.name} to {fader_value}")
+                    # self.logger.debug(f"Setting {self.name} to {fader_value}")
                     self.mixer.send(address, fader_value)
                     last_value = current_value
             except: 

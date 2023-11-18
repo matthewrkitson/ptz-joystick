@@ -17,7 +17,7 @@ def interpolate(in_min, value_in, in_max, out_min, out_max, cast=None):
     out_range = out_max - out_min
     range_fraction = (value_in - in_min) / in_range
     out = out_min + (range_fraction * out_range)
-    logging.debug(f"Interpolating [{in_min}, {value_in}, {in_max}] -> [{out_min}, {out_max}] = {out}")
+    # logging.debug(f"Interpolating [{in_min}, {value_in}, {in_max}] -> [{out_min}, {out_max}] = {out}")
     return cast(out) if cast else out
 
 def function():
