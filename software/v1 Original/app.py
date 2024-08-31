@@ -87,7 +87,8 @@ focus_in_button      = IlluminatedButton(13, aw9523, 5, i2c_lock)
 focus_lock_button    = IlluminatedButton( 6, aw9523, 6, i2c_lock)
 focus_out_button     = IlluminatedButton( 5, aw9523, 7, i2c_lock)
 
-camera = web_api.WebApiController("localhost:8080", focus_lock_button)
+# camera = web_api.WebApiController("localhost:8080", focus_lock_button)
+camera = web_api.WebApiController("192.168.56.174", focus_lock_button)
 
 speed_value_provider = RotaryValueProvider(camera.pantilt_speed_min, camera.pantilt_speed_max, "Speed", rotary1_seesaw, rotary1_int_pin, lcd)
 

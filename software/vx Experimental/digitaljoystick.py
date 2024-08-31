@@ -21,6 +21,7 @@ class DigitalJoystick():
         self.left_button.when_released = self.status_changed
         self.right_button.when_pressed = self.status_changed
         self.right_button.when_released = self.status_changed
+        self.speed_value_provider.value_changed = self.status_changed
 
     def status_changed(self):
         speed = utils.interpolate(self.speed_value_provider.min, self.speed_value_provider.value, self.speed_value_provider.max, self.camera.pantilt_speed_min, self.camera.pantilt_speed_max, int)
