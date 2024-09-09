@@ -11,6 +11,9 @@ Alternatively, for WiFi and SSH:
 
 sudo apt-get install python3-dev
 
+Also, if you're on a non Raspberry Pi platform (for development)
+sudo apt-get install build-essential autoconf libtool pkg-config make
+
 To use the X-Air API, we need to build a newer version of Python than comes 
 with the default Raspberry PI OS.
 
